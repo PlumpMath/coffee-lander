@@ -6,6 +6,9 @@ LanderGame = (function() {
   function LanderGame() {
     this.preload = __bind(this.preload, this);
     this.render = __bind(this.render, this);
+    this.updateAngle = __bind(this.updateAngle, this);
+    this.isDown = __bind(this.isDown, this);
+    this.updateForces = __bind(this.updateForces, this);
     this.update = __bind(this.update, this);
     this.create = __bind(this.create, this);
     this.game = new Phaser.Game(800, 500, Phaser.CANVAS, 'main', {
@@ -38,13 +41,31 @@ LanderGame = (function() {
   };
 
   LanderGame.prototype.update = function() {
+    this.updateAngle();
+    return this.updateForces();
+  };
+
+  LanderGame.prototype.updateForces = function() {};
+
+  LanderGame.prototype.keys = {
+    left: Phaser.Keyboard.LEFT,
+    right: Phaser.Keyboard.RIGHT,
+    up: Phaser.Keyboard.UP,
+    down: Phaser.Keyboard.DOWN
+  };
+
+  LanderGame.prototype.isDown = function(key) {
+    return this.game.input.keyboard.isDown(this.keys[key]);
+  };
+
+  LanderGame.prototype.updateAngle = function() {
     var angleDelta, rotationDirection;
     angleDelta = 1;
     rotationDirection = 0;
-    if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+    if (this.isDown('left')) {
       rotationDirection = -1;
     }
-    if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+    if (this.isDown('right')) {
       rotationDirection = 1;
     }
     return this.sprite.body.angle += angleDelta * rotationDirection;

@@ -28,12 +28,27 @@ class LanderGame
     @game.physics.p2.enable(@sprite)
 
   update: =>
+    @updateAngle()
+    @updateForces()
+
+  updateForces: =>
+
+  keys:
+    left: Phaser.Keyboard.LEFT
+    right: Phaser.Keyboard.RIGHT
+    up: Phaser.Keyboard.UP
+    down: Phaser.Keyboard.DOWN
+
+  isDown: (key) =>
+    @game.input.keyboard.isDown(@keys[key])
+
+  updateAngle: =>
     angleDelta = 1
     rotationDirection = 0
 
-    if (@game.input.keyboard.isDown(Phaser.Keyboard.LEFT))
+    if (@isDown 'left')
       rotationDirection = -1
-    if (@game.input.keyboard.isDown(Phaser.Keyboard.RIGHT))
+    if (@isDown 'right')
       rotationDirection = 1
 
     @sprite.body.angle+= angleDelta * rotationDirection
