@@ -32,11 +32,23 @@ LanderGame = (function() {
     this.sprite.y = 400;
     this.sprite.anchor.x = 64;
     this.sprite.anchor.y = 180;
+    this.sprite.fixedRotation = true;
     this.game.camera.follow(this.sprite, Phaser.Camera.FOLLOW_LOCKON);
     return this.game.physics.p2.enable(this.sprite);
   };
 
-  LanderGame.prototype.update = function() {};
+  LanderGame.prototype.update = function() {
+    var angleDelta, rotationDirection;
+    angleDelta = 1;
+    rotationDirection = 0;
+    if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+      rotationDirection = -1;
+    }
+    if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+      rotationDirection = 1;
+    }
+    return this.sprite.body.angle += angleDelta * rotationDirection;
+  };
 
   LanderGame.prototype.render = function() {};
 
