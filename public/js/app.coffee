@@ -68,7 +68,7 @@ class LanderGame
 
 
   updateAngle: =>
-    angleDelta = 1.5
+    angleDelta = 1
     rotationDirection = 0
 
     if (@isDown 'left')
@@ -90,6 +90,7 @@ class LanderGame
   render: =>
   preload: =>
     @game.load.image('lander', 'img/lander.png')
-    @game.load.image("background", "img/space01.png")
+    @game.load.image("background", "img/moonsurface.png")
+    # @game.load.image("background", "img/space01.png")
 
 new LanderGame
