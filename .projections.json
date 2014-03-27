@@ -1,0 +1,5 @@
+{
+  "public/js/*.coffee": {"command": "coffee"},
+  "public/js/*.js": {"command": "js"},
+  "public/*.html": {"command": "html"}
+}

@@ -15,7 +15,7 @@ class LanderGame
 
     @bg = @game.add.sprite(0, 0, @bmd)
 
-    @game.physics.p2.gravity.y = 25
+    @game.physics.p2.gravity.y = 100
     @game.physics.p2.defaultRestitution = 0.8
 
     @sprite = window.s = @game.add.sprite(32, 450, 'lander')
@@ -36,19 +36,15 @@ class LanderGame
     @sprite.body.force.destination[1] = forces[1]
 
   getForces: =>
-    # sin(angle) = forceY/thrust
-    # cos(angle) = forceX/thrust
-    # tan(angle) = forceY/forceX
-
     return [0, 0] unless @isDown('up')
 
-    thrust = 20
+    thrust = 10
     rotation = @sprite.body.rotation
 
     return [
       -thrust * Math.sin(rotation),
-      thrust / 4
-      # thrust * Main.acos(rotation)
+      # thrust / 4
+      thrust * Math.cos(rotation)
     ]
 
     # radians_in_full_circle = 2 * Math.PI
