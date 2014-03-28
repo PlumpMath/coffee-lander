@@ -1,7 +1,7 @@
 
 class LanderGame
-  constructor: ->
-    @game = new Phaser.Game(800, 500, Phaser.CANVAS, 'main', preload: @preload, create: @create, update: @update, render: @render)
+  constructor: (@width, @height) ->
+    @game = new Phaser.Game(@width, @height, Phaser.CANVAS, 'main', preload: @preload, create: @create, update: @update, render: @render)
 
   create: =>
     @game.add.tileSprite(0, 0, 800, 800, "background")
@@ -31,9 +31,9 @@ class LanderGame
   update: =>
     @updateAngle()
     @updateForces()
-    @stopOnEdges()
+    # @stopOnEdges()
 
-  stopOnEdges: =>
+  # stopOnEdges: =>
 
 
   updateForces: =>
@@ -100,6 +100,6 @@ class LanderGame
     @game.load.image("background", "img/moonsurface.png")
     # @game.load.image("background", "img/space01.png")
 
-game = new LanderGame
+game = new LanderGame 1600, 1000
 console.log document.getElementById('reset-lander').click -> alert 'omg'
 
