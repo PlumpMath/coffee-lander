@@ -23,9 +23,9 @@ class LanderGame
     # @game.camera.follow(@sprite, Phaser.Camera.FOLLOW_LOCKON);
     @game.physics.p2.enable(@sprite)
 
-    @resetLander()
+    @resetGame()
 
-  resetLander: =>
+  resetGame: =>
     @sprite.body.x = @width / 2
     @sprite.body.y = @height / 10
     @sprite.body.rotation = 0
@@ -33,26 +33,39 @@ class LanderGame
     @sprite.body.force.destination[1] = 0
     @sprite.body.velocity.destination[0] = 0
     @sprite.body.velocity.destination[1] = 0
+    @hideFailMessage()
 
   update: =>
     @updateAngle()
     @updateForces()
     @failOnEdges()
-    # @stopOnEdges()
 
   failOnEdges: =>
     x = @sprite.body.x
     y = @sprite.body.y
 
     if x < 0 || x > @width || y < 0 || y > @height
-      alert 'Przegrales!'
-      @resetLander()
+      @showFailMessage()
+      setTimeout @resetGame, 2000
 
-  resetForces: =>
+  showFailMessage: =>
+    unless @text
+      @text = @game.add.text(@game.world.centerX, @game.world.centerY, "faaaail")
+      @text.anchor.set(0.5)
+      @text.align = 'center'
+      @text.font = 'Arial'
+      @text.fontWeight = 'bold'
+      @text.fontSize = 70
+      @text.fill = '#ffffff'
+      @text.visible = false
+      window.t=@text
+    @text.visible = true
+
+  hideFailMessage: =>
+    @text.visible = false if @text
 
   updateForces: =>
     forces = @getForces()
-    # console.log " X = #{forces[0]}       Y = #{forces[1]} "
     @sprite.body.force.destination[0] = forces[0]
     @sprite.body.force.destination[1] = forces[1]
 
@@ -64,7 +77,6 @@ class LanderGame
 
     return [
       -thrust * Math.sin(rotation),
-      # thrust / 4
       thrust * Math.cos(rotation)
     ]
 
@@ -110,11 +122,12 @@ class LanderGame
 
   render: =>
   preload: =>
-    @game.load.image('lander', 'img/lander.png')
+    # @game.load.image('lander', 'img/lander.png')
+    @game.load.image('lander', 'img/pixel-lander.png')
     @game.load.image("background", "img/moonsurface.png")
     # @game.load.image("background", "img/space01.png")
 
 game = new LanderGame 900, 600
-$('#reset-lander').on 'click', game.resetLander
+$('#reset-lander').on 'click', game.resetGame
 # console.log document.getElementById('reset-lander').onclick -> alert 'omg'
 
