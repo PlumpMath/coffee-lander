@@ -19,22 +19,36 @@ class LanderGame
     @game.physics.p2.defaultRestitution = 0.8
 
     @sprite = window.s = @game.add.sprite(32, 450, 'lander')
-    @resetLander()
 
     # @game.camera.follow(@sprite, Phaser.Camera.FOLLOW_LOCKON);
     @game.physics.p2.enable(@sprite)
 
+    @resetLander()
+
   resetLander: =>
-    @sprite.position.x = 400
-    @sprite.position.y = 400
+    @sprite.body.x = @width / 2
+    @sprite.body.y = @height / 10
+    @sprite.body.rotation = 0
+    @sprite.body.force.destination[0] = 0
+    @sprite.body.force.destination[1] = 0
+    @sprite.body.velocity.destination[0] = 0
+    @sprite.body.velocity.destination[1] = 0
 
   update: =>
     @updateAngle()
     @updateForces()
+    @failOnEdges()
     # @stopOnEdges()
 
-  # stopOnEdges: =>
+  failOnEdges: =>
+    x = @sprite.body.x
+    y = @sprite.body.y
 
+    if x < 0 || x > @width || y < 0 || y > @height
+      alert 'Przegrales!'
+      @resetLander()
+
+  resetForces: =>
 
   updateForces: =>
     forces = @getForces()
@@ -100,6 +114,7 @@ class LanderGame
     @game.load.image("background", "img/moonsurface.png")
     # @game.load.image("background", "img/space01.png")
 
-game = new LanderGame 1000, 600
-console.log document.getElementById('reset-lander').click -> alert 'omg'
+game = new LanderGame 900, 600
+$('#reset-lander').on 'click', game.resetLander
+# console.log document.getElementById('reset-lander').onclick -> alert 'omg'
 
