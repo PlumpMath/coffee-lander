@@ -15,30 +15,37 @@ class LanderGame
 
     @bg = @game.add.sprite(0, 0, @bmd)
 
-    @game.physics.p2.gravity.y = 100
+    @game.physics.p2.gravity.y = 80
     @game.physics.p2.defaultRestitution = 0.8
 
     @sprite = window.s = @game.add.sprite(32, 450, 'lander')
-    @sprite.position.x = 400
-    @sprite.position.y = 400
+    @resetLander()
 
     # @game.camera.follow(@sprite, Phaser.Camera.FOLLOW_LOCKON);
     @game.physics.p2.enable(@sprite)
 
+  resetLander: =>
+    @sprite.position.x = 400
+    @sprite.position.y = 400
+
   update: =>
     @updateAngle()
     @updateForces()
+    @stopOnEdges()
+
+  stopOnEdges: =>
+
 
   updateForces: =>
     forces = @getForces()
-    console.log " X = #{forces[0]}       Y = #{forces[1]} "
+    # console.log " X = #{forces[0]}       Y = #{forces[1]} "
     @sprite.body.force.destination[0] = forces[0]
     @sprite.body.force.destination[1] = forces[1]
 
   getForces: =>
     return [0, 0] unless @isDown('up')
 
-    thrust = 10
+    thrust = 8
     rotation = @sprite.body.rotation
 
     return [
@@ -93,4 +100,6 @@ class LanderGame
     @game.load.image("background", "img/moonsurface.png")
     # @game.load.image("background", "img/space01.png")
 
-new LanderGame
+game = new LanderGame
+console.log document.getElementById('reset-lander').click -> alert 'omg'
+
