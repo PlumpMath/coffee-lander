@@ -1,7 +1,16 @@
 
 class LanderGame
-  constructor: (@width, @height) ->
-    @game = new Phaser.Game(@width, @height, Phaser.WEBGL, 'main', preload: @preload, create: @create, update: @update, render: @render)
+  options:
+    width: 900
+    height: 600
+    gravity: 30
+    thrust: 15
+    rotationSpeed: 2
+
+  constructor: (options) ->
+    jQuery.extend @options, options
+
+    @game = new Phaser.Game(@options.width, @options.height, Phaser.WEBGL, 'main', preload: @preload, create: @create, update: @update, render: @render)
 
   create: =>
     @game.add.tileSprite(0, 0, 800, 800, "background")
@@ -15,7 +24,6 @@ class LanderGame
 
     @bg = @game.add.sprite(0, 0, @bmd)
 
-    @game.physics.p2.gravity.y = 80
     @game.physics.p2.defaultRestitution = 0.8
 
     @sprite = window.s = @game.add.sprite(32, 450, 'lander')
@@ -25,9 +33,12 @@ class LanderGame
 
     @resetGame()
 
+  updateFromOptions: =>
+    game.game.physics.p2.gravity.y = @options.gravity
+
   resetGame: =>
-    @sprite.body.x = @width / 2
-    @sprite.body.y = @height / 10
+    @sprite.body.x = @options.width / 2
+    @sprite.body.y = @options.height / 10
     @sprite.body.rotation = 0
     @sprite.body.force.destination[0] = 0
     @sprite.body.force.destination[1] = 0
@@ -35,16 +46,20 @@ class LanderGame
     @sprite.body.velocity.destination[1] = 0
     @hideFailMessage()
 
+  afterUpdate: (game) ->
+
   update: =>
+    @updateFromOptions()
     @updateAngle()
     @updateForces()
     @failOnEdges()
+    @afterUpdate(@)
 
   failOnEdges: =>
     x = @sprite.body.x
     y = @sprite.body.y
 
-    if x < 0 || x > @width || y < 0 || y > @height
+    if x < 0 || x > @options.width || y < 0 || y > @options.height
       @showFailMessage()
       setTimeout @resetGame, 2000
 
@@ -72,12 +87,11 @@ class LanderGame
   getForces: =>
     return [0, 0] unless @isDown('up')
 
-    thrust = 8
     rotation = @sprite.body.rotation
 
     return [
-      -thrust * Math.sin(rotation),
-      thrust * Math.cos(rotation)
+      -@options.thrust * Math.sin(rotation),
+      @options.thrust * Math.cos(rotation)
     ]
 
     # radians_in_full_circle = 2 * Math.PI
@@ -101,7 +115,6 @@ class LanderGame
 
 
   updateAngle: =>
-    angleDelta = 1
     rotationDirection = 0
 
     if (@isDown 'left')
@@ -109,7 +122,7 @@ class LanderGame
     if (@isDown 'right')
       rotationDirection = 1
 
-    @sprite.body.angle+= angleDelta * rotationDirection
+    @sprite.body.angle+= @options.rotationSpeed * rotationDirection
 
   keys:
     left: Phaser.Keyboard.LEFT
@@ -127,7 +140,25 @@ class LanderGame
     @game.load.image("background", "img/moonsurface.png")
     # @game.load.image("background", "img/space01.png")
 
-game = new LanderGame 900, 600
-$('#reset-lander').on 'click', game.resetGame
-# console.log document.getElementById('reset-lander').onclick -> alert 'omg'
+defaultOptions = LanderGame::options
+$gravity = $('#gravity').val defaultOptions.gravity
+$thrust = $('#thrust').val defaultOptions.thrust
+$rotationSpeed = $('#rotation-speed').val defaultOptions.rotationSpeed
 
+game = new LanderGame width: 900, height: 600
+
+$('#reset-lander').on 'click', game.resetGame
+
+['gravity', 'thrust', 'rotationSpeed'].forEach (param) ->
+  $el = this['$'+param]
+  $el.on 'change', (e) ->
+    $el.next('span').text = game.options[param] = $el.val()
+
+# $gravity.on 'change', (e) ->
+#   game.options.gravity = $(e.target).val()
+#
+# $thrust.on 'change', (e) ->
+#   game.options.thrust = $(e.target).val()
+#
+# $rotationSpeed.on 'change', (e) ->
+#   game.options.rotationSpeed = $(e.target).val()
