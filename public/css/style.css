@@ -1,4 +1,8 @@
 
 input[type="range"] {
-  width: 80%;
+  position: absolute;
+  left: 150px;
+  width: 300px;
+  height: 8px;
+  display: inline-block;
 }

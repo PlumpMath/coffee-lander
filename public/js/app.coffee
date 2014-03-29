@@ -3,9 +3,11 @@ class LanderGame
   options:
     width: 900
     height: 600
-    gravity: 30
-    thrust: 15
+    gravity: 150
+    thrust: 30
     rotationSpeed: 2
+
+  texts: {}
 
   constructor: (options) ->
     jQuery.extend @options, options
